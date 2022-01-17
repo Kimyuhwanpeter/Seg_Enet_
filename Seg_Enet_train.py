@@ -300,38 +300,38 @@ def main():
                 if count % 10 == 0:
                     print("Epoch: {} [{}/{}] loss = {}".format(epoch, step+1, tr_idx, loss))
 
-                #if count % 100 == 0:
+                if count % 100 == 0:
 
-                #    logits = run_model(model, batch_images, False)
-                #    for i in range(FLAGS.batch_size):
-                #        logit = logits[i]
-                #        logit = tf.nn.softmax(logit, -1)
-                #        predict_image = tf.argmax(logit, -1)
+                    logits = run_model(model, batch_images, False)
+                    for i in range(FLAGS.batch_size):
+                        logit = logits[i]
+                        logit = tf.nn.softmax(logit, -1)
+                        predict_image = tf.argmax(logit, -1)
                         
-                #        label = batch_labels[i]
-                #        label = np.squeeze(label, -1)
+                        label = batch_labels[i]
+                        label = np.squeeze(label, -1)
                         
-                #        pred_mask_color = color_map[predict_image]  # ?????׸?ó?? ?Ұ?!
+                        pred_mask_color = color_map[predict_image]  # ?????׸?ó?? ?Ұ?!
                         
-                #        label = np.expand_dims(label, -1)
-                #        label = np.concatenate((label, label, label), -1)
-                #        label_mask_color = np.zeros([FLAGS.img_size, FLAGS.img_size, 3], dtype=np.uint8)
-                #        label_mask_color = np.where(label == np.array([0,0,0], dtype=np.uint8), np.array([255, 0, 0], dtype=np.uint8), label_mask_color)
-                #        label_mask_color = np.where(label == np.array([1,1,1], dtype=np.uint8), np.array([0, 0, 255], dtype=np.uint8), label_mask_color)
+                        label = np.expand_dims(label, -1)
+                        label = np.concatenate((label, label, label), -1)
+                        label_mask_color = np.zeros([FLAGS.img_size, FLAGS.img_size, 3], dtype=np.uint8)
+                        label_mask_color = np.where(label == np.array([0,0,0], dtype=np.uint8), np.array([255, 0, 0], dtype=np.uint8), label_mask_color)
+                        label_mask_color = np.where(label == np.array([1,1,1], dtype=np.uint8), np.array([0, 0, 255], dtype=np.uint8), label_mask_color)
 
-                #        temp_img = predict_image
-                #        temp_img = np.expand_dims(temp_img, -1)
-                #        temp_img2 = temp_img
-                #        temp_img = np.concatenate((temp_img, temp_img, temp_img), -1)
-                #        image = np.concatenate((temp_img2, temp_img2, temp_img2), -1)
-                #        pred_mask_warping = np.where(temp_img == np.array([2,2,2], dtype=np.uint8), print_images[i], image)
-                #        pred_mask_warping = np.where(temp_img == np.array([0,0,0], dtype=np.uint8), np.array([255, 0, 0], dtype=np.uint8), pred_mask_warping)
-                #        pred_mask_warping = np.where(temp_img == np.array([1,1,1], dtype=np.uint8), np.array([0, 0, 255], dtype=np.uint8), pred_mask_warping)
-                #        pred_mask_warping /= 255.
+                        temp_img = predict_image
+                        temp_img = np.expand_dims(temp_img, -1)
+                        temp_img2 = temp_img
+                        temp_img = np.concatenate((temp_img, temp_img, temp_img), -1)
+                        image = np.concatenate((temp_img2, temp_img2, temp_img2), -1)
+                        pred_mask_warping = np.where(temp_img == np.array([2,2,2], dtype=np.uint8), print_images[i], image)
+                        pred_mask_warping = np.where(temp_img == np.array([0,0,0], dtype=np.uint8), np.array([255, 0, 0], dtype=np.uint8), pred_mask_warping)
+                        pred_mask_warping = np.where(temp_img == np.array([1,1,1], dtype=np.uint8), np.array([0, 0, 255], dtype=np.uint8), pred_mask_warping)
+                        pred_mask_warping /= 255.
 
-                #        plt.imsave(FLAGS.sample_images + "/{}_batch_{}".format(count, i) + "_label.png", label_mask_color)
-                #        plt.imsave(FLAGS.sample_images + "/{}_batch_{}".format(count, i) + "_predict.png", pred_mask_color)
-                #        plt.imsave(FLAGS.sample_images + "/{}_batch_{}".format(count, i) + "_warping_predict.png", pred_mask_warping)
+                        plt.imsave(FLAGS.sample_images + "/{}_batch_{}".format(count, i) + "_label.png", label_mask_color)
+                        plt.imsave(FLAGS.sample_images + "/{}_batch_{}".format(count, i) + "_predict.png", pred_mask_color)
+                        plt.imsave(FLAGS.sample_images + "/{}_batch_{}".format(count, i) + "_warping_predict.png", pred_mask_warping)
                     
 
                 count += 1
