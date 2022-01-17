@@ -202,19 +202,22 @@ def dice_loss(y_true, y_pred):
     return 1 - numerator / denominator
 
 @tf.function
-def cal_loss(model, images, batch_labels):
+def cal_loss(model, images, batch_labels, a):
 
     with tf.GradientTape() as tape:
 
         batch_labels = tf.reshape(batch_labels, [-1,])
-        indices = tf.squeeze(tf.where(tf.not_equal(batch_labels, 2)),1)
-        batch_labels = tf.cast(tf.gather(batch_labels, indices), tf.float32)
+        batch_labels = tf.one_hot(batch_labels, 3)
+        #indices = tf.squeeze(tf.where(tf.not_equal(batch_labels, 2)),1)
+        #batch_labels = tf.cast(tf.gather(batch_labels, indices), tf.float32)
 
         logits = run_model(model, images, True)
         logits = tf.reshape(logits, [-1, FLAGS.total_classes])
-        logits = tf.gather(logits, indices)
+        logits = tf.nn.softmax(logits, -1)
+        #logits = tf.gather(logits, indices)
 
-        loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)(batch_labels, logits)
+        loss = tf.nn.weighted_cross_entropy_with_logits(batch_labels, logits, a)
+        loss = tf.reduce_mean(loss)
 
         # print(tf.keras.losses.BinaryCrossentropy(from_logits=True)(crop_labels, crop_logits))
         # print(tf.keras.losses.BinaryCrossentropy(from_logits=True)(weed_labels, weed_logits))
@@ -298,8 +301,21 @@ def main():
 
                 # crop_labels = np.squeeze(crop_labels, -1)
                 # weed_labels = np.squeeze(weed_labels, -1)
+                class_imbal_labels = batch_labels
+                class_imbal_labels_buf = 0.
+                for i in range(FLAGS.batch_size):
+                    class_imbal_label = class_imbal_labels[i]
+                    class_imbal_label = np.reshape(class_imbal_label, [384*512, ])
+                    count_c_i_lab = np.bincount(class_imbal_label, minlength=FLAGS.total_classes)
+                    class_imbal_labels_buf += count_c_i_lab
+                class_imbal_labels_buf /= FLAGS.batch_size  # [x, x, x] -- > [h*w, 3]
+                class_imbal_labels_buf = np.expand_dims(class_imbal_labels_buf, -1)
+                class_imbal_labels_buf = (class_imbal_labels_buf - np.min(class_imbal_labels_buf)) / (np.max(class_imbal_labels_buf) - np.min(class_imbal_labels_buf))
+                a = [class_imbal_labels_buf for i in range(384*512*4)]
+                a = np.squeeze(np.array(a, np.float32), -1)
 
-                loss = cal_loss(model, batch_images, batch_labels)  # loss?????? ???߰? ???? test iou?̴? ?κ??ڵ? ???ľ???!
+
+                loss = cal_loss(model, batch_images, batch_labels, a)  # loss?????? ???߰? ???? test iou?̴? ?κ??ڵ? ???ľ???!
                 if count % 10 == 0:
                     print("Epoch: {} [{}/{}] loss = {}".format(epoch, step+1, tr_idx, loss))
 
