@@ -207,9 +207,12 @@ def cal_loss(model, images, batch_labels):
     with tf.GradientTape() as tape:
 
         batch_labels = tf.reshape(batch_labels, [-1,])
+        indices = tf.squeeze(tf.where(tf.not_equal(batch_labels, 2)),1)
+        batch_labels = tf.cast(tf.gather(batch_labels, indices), tf.float32)
 
         logits = run_model(model, images, True)
         logits = tf.reshape(logits, [-1, FLAGS.total_classes])
+        logits = tf.gather(logits, indices)
 
         loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)(batch_labels, logits)
 
