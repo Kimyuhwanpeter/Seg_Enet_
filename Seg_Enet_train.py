@@ -11,15 +11,15 @@ import os
 
 FLAGS = easydict.EasyDict({"img_size": 512,
 
-                           "train_txt_path": "D:/[1]DB/[5]4th_paper_DB/crop_weed/datasets_IJRR2017/train.txt",
+                           "train_txt_path": "/yuwhan/yuwhan/Dataset/Segmentation/BoniRob/train.txt",
 
-                           "val_txt_path": "D:/[1]DB/[5]4th_paper_DB/crop_weed/datasets_IJRR2017/val.txt",
+                           "val_txt_path": "/yuwhan/yuwhan/Dataset/Segmentation/BoniRob/val.txt",
 
-                           "test_txt_path": "D:/[1]DB/[5]4th_paper_DB/crop_weed/datasets_IJRR2017/test.txt",
+                           "test_txt_path": "/yuwhan/yuwhan/Dataset/Segmentation/BoniRob/test.txt",
                            
-                           "label_path": "D:/[1]DB/[5]4th_paper_DB/crop_weed/datasets_IJRR2017/raw_aug_gray_mask/",
+                           "label_path": "/yuwhan/yuwhan/Dataset/Segmentation/BoniRob/raw_aug_gray_mask/",
                            
-                           "image_path": "D:/[1]DB/[5]4th_paper_DB/crop_weed/datasets_IJRR2017/raw_aug_rgb_img/",
+                           "image_path": "/yuwhan/yuwhan/Dataset/Segmentation/BoniRob/raw_aug_rgb_img/",
                            
                            "pre_checkpoint": False,
                            
@@ -37,11 +37,11 @@ FLAGS = easydict.EasyDict({"img_size": 512,
 
                            "batch_size": 4,
 
-                           "sample_images": "/yuwhan/Edisk/yuwhan/Edisk/Segmentation/SegNet_5thLoss_ablation/BoniRob/sample_images",
+                           "sample_images": "/yuwhan/Edisk/yuwhan/Edisk/Segmentation/Seg_Enet/BoniRob/sample_images",
 
-                           "save_checkpoint": "/yuwhan/Edisk/yuwhan/Edisk/Segmentation/SegNet_5thLoss_ablation/BoniRob/checkpoint",
+                           "save_checkpoint": "/yuwhan/Edisk/yuwhan/Edisk/Segmentation/Seg_Enet/BoniRob/checkpoint",
 
-                           "save_print": "C:/Users/Yuhwan/Downloads/train_out.txt",
+                           "save_print": "/yuwhan/Edisk/yuwhan/Edisk/Segmentation/Seg_Enet/BoniRob/train_out.txt",
 
                            "test_images": "D:/[1]DB/[5]4th_paper_DB/crop_weed/related_work/SegNet/rice_seedling_weed/test_images",
 
@@ -315,7 +315,7 @@ def main():
                         
                         label = np.expand_dims(label, -1)
                         label = np.concatenate((label, label, label), -1)
-                        label_mask_color = np.zeros([FLAGS.img_size, FLAGS.img_size, 3], dtype=np.uint8)
+                        label_mask_color = np.zeros([384, 512, 3], dtype=np.uint8)
                         label_mask_color = np.where(label == np.array([0,0,0], dtype=np.uint8), np.array([255, 0, 0], dtype=np.uint8), label_mask_color)
                         label_mask_color = np.where(label == np.array([1,1,1], dtype=np.uint8), np.array([0, 0, 255], dtype=np.uint8), label_mask_color)
 
@@ -359,15 +359,15 @@ def main():
 
                     miou_, crop_iou_, weed_iou_ = Measurement(predict=predict_image,
                                         label=batch_label, 
-                                        shape=[FLAGS.img_size*FLAGS.img_size, ], 
+                                        shape=[384*512, ], 
                                         total_classes=FLAGS.total_classes).MIOU()
                     f1_score_, recall_ = Measurement(predict=predict_image,
                                             label=batch_label,
-                                            shape=[FLAGS.img_size*FLAGS.img_size, ],
+                                            shape=[384*512, ],
                                             total_classes=FLAGS.total_classes).F1_score_and_recall()
                     tdr_ = Measurement(predict=predict_image,
                                             label=batch_label,
-                                            shape=[FLAGS.img_size*FLAGS.img_size, ],
+                                            shape=[384*512, ],
                                             total_classes=FLAGS.total_classes).TDR()
 
                     miou += miou_
@@ -426,15 +426,15 @@ def main():
 
                     miou_, crop_iou_, weed_iou_ = Measurement(predict=predict_image,
                                         label=batch_label, 
-                                        shape=[FLAGS.img_size*FLAGS.img_size, ], 
+                                        shape=[384*512, ], 
                                         total_classes=FLAGS.total_classes).MIOU()
                     f1_score_, recall_ = Measurement(predict=predict_image,
                                             label=batch_label,
-                                            shape=[FLAGS.img_size*FLAGS.img_size, ],
+                                            shape=[384*512, ],
                                             total_classes=FLAGS.total_classes).F1_score_and_recall()
                     tdr_ = Measurement(predict=predict_image,
                                             label=batch_label,
-                                            shape=[FLAGS.img_size*FLAGS.img_size, ],
+                                            shape=[384*512, ],
                                             total_classes=FLAGS.total_classes).TDR()
 
                     miou += miou_
@@ -488,15 +488,15 @@ def main():
 
                     miou_, crop_iou_, weed_iou_ = Measurement(predict=predict_image,
                                         label=batch_label, 
-                                        shape=[FLAGS.img_size*FLAGS.img_size, ], 
+                                        shape=[384*512, ], 
                                         total_classes=FLAGS.total_classes).MIOU()
                     f1_score_, recall_ = Measurement(predict=predict_image,
                                             label=batch_label,
-                                            shape=[FLAGS.img_size*FLAGS.img_size, ],
+                                            shape=[384*512, ],
                                             total_classes=FLAGS.total_classes).F1_score_and_recall()
                     tdr_ = Measurement(predict=predict_image,
                                             label=batch_label,
-                                            shape=[FLAGS.img_size*FLAGS.img_size, ],
+                                            shape=[384*512, ],
                                             total_classes=FLAGS.total_classes).TDR()
 
                     miou += miou_
@@ -574,14 +574,14 @@ def main():
 
                 output_confusion, temp_output_3D = Measurement(predict=predict_image,
                                         label=batch_label,
-                                        shape=[FLAGS.img_size*FLAGS.img_size, ],
+                                        shape=[384*512, ],
                                         total_classes=FLAGS.total_classes).show_confusion()
                 output_confusion_ = output_confusion
 
                 pred_mask_color = color_map[predict_image]  # ?????׸?ó?? ?Ұ?!
                 batch_label = np.expand_dims(batch_label, -1)
                 batch_label = np.concatenate((batch_label, batch_label, batch_label), -1)
-                label_mask_color = np.zeros([FLAGS.img_size, FLAGS.img_size, 3], dtype=np.uint8)
+                label_mask_color = np.zeros([384*512, 3], dtype=np.uint8)
                 label_mask_color = np.where(batch_label == np.array([0,0,0], dtype=np.uint8), np.array([255, 0, 0], dtype=np.uint8), label_mask_color)
                 label_mask_color = np.where(batch_label == np.array([1,1,1], dtype=np.uint8), np.array([0, 0, 255], dtype=np.uint8), label_mask_color)
 
